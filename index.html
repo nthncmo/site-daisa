@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Você 💜</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#1e1e2f,#3a0ca3,#7209b7);
+    font-family:Arial;
+    color:white;
+    text-align:center;
+    overflow:hidden;
+}
+
+/* Container principal */
+.container{
+    background:rgba(255,255,255,0.1);
+    padding:30px;
+    border-radius:20px;
+    backdrop-filter:blur(10px);
+    box-shadow:0 0 30px rgba(0,0,0,0.5);
+    width:320px;
+    transition:0.5s;
+    z-index: 2; /* Garante que fique na frente */
+}
+
+/* Inputs e Botões */
+input{
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    margin-top:10px;
+    width:85%;
+    text-align:center;
+    outline:none;
+}
+
+button{
+    margin-top:15px;
+    padding:12px 25px;
+    border:none;
+    border-radius:10px;
+    background:#ff4da6;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#ff1e8e;
+    transform: scale(1.05);
+}
+
+#btnPlayPause{
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    font-size: 20px;
+    line-height: 50px;
+    margin-top: 10px;
+}
+
+/* Letra */
+#letra{
+    font-size:20px;
+    margin:20px 0;
+    min-height:80px;
+    line-height:1.4;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+.traducao{
+    font-size:14px;
+    opacity:0.8;
+    margin-top:5px;
+}
+
+/* Letras subindo */
+.letra-subindo{
+    position:fixed;
+    bottom:-50px;
+    font-weight:bold;
+    animation:subir 4s linear forwards;
+    pointer-events:none;
+    color:#b517ff;
+    z-index: 3;
+}
+
+@keyframes subir{
+    from{ transform:translateY(0); opacity:1; }
+    to{ transform:translateY(-110vh); opacity:0; }
+}
+
+/* TELA FINAL (A Flor e o Versículo) */
+#telaFinal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    flex-direction: column;
+    justify-content: flex-end; /* Joga o versículo mais para baixo */
+    align-items: center;
+    z-index: 10;
+    background: #020205; /* Fundo espaço escuro */
+}
+
+#iframeFlor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    z-index: -1; /* Fica atrás do versículo */
+}
+
+#versiculo {
+    background: rgba(0, 0, 0, 0.4); /* Fundo levemente escuro para ler bem */
+    padding: 20px 30px;
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+    font-size: 22px;
+    color: #f8e5ff;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 8vh; /* Distância do fundo da tela */
+    animation: fadeIn 3s forwards;
+}
+
+/* Animações de transição */
+.fade-out{
+    animation:fadeOut 1s forwards;
+}
+
+.fade-in{
+    animation:fadeIn 1.5s forwards;
+}
+
+@keyframes fadeOut{
+    from{ opacity:1; transform:scale(1); }
+    to{ opacity:0; transform:scale(1.1); }
+}
+
+@keyframes fadeIn{
+    from{ opacity:0; }
+    to{ opacity:1; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="telaNome">
+    <h2>Qual é o seu nome? 💜</h2>
+    <input type="text" id="inputNome" placeholder="Digite seu nome">
+    <br>
+    <button onclick="iniciar()">Continuar</button>
+</div>
+
+<div class="container" id="telaMusica" style="display:none;">
+    <h1 id="mensagem"></h1>
+    <div id="letra">💫</div>
+    <button id="btnPlayPause" onclick="togglePlay()">⏸</button>
+
+    <audio id="musica">
+        <source src="superpowers.mp3" type="audio/mpeg">
+    </audio>
+</div>
+
+<div id="telaFinal">
+    <iframe id="iframeFlor" src=""></iframe>
+    
+    <div id="versiculo">
+        "Mulher virtuosa, quem a achará?<br>O seu valor muito excede o de rubis."<br>
+        <span style="font-size: 16px; opacity: 0.8;">Provérbios 31:10</span>
+    </div>
+</div>
+
+<script>
+const musica = document.getElementById("musica");
+const letra = document.getElementById("letra");
+const btnPlayPause = document.getElementById("btnPlayPause");
+
+let isaSubiu = false;
+let finalAconteceu = false; // Controle do final
+
+function iniciar(){
+    const nome = document.getElementById("inputNome").value;
+    if(nome.trim() === ""){
+        alert("Digite seu nome 💜");
+        return;
+    }
+
+    const telaNome = document.getElementById("telaNome");
+    const telaMusica = document.getElementById("telaMusica");
+
+    telaNome.classList.add("fade-out");
+
+    setTimeout(() => {
+        telaNome.style.display = "none";
+        telaMusica.style.display = "block";
+        telaMusica.classList.add("fade-in");
+
+        document.getElementById("mensagem").innerText = nome + ", uma doce garota 💖";
+
+        musica.play();
+    }, 800);
+}
+
+function togglePlay(){
+    if(musica.paused){
+        musica.play();
+        btnPlayPause.innerText = "⏸";
+    }else{
+        musica.pause();
+        btnPlayPause.innerText = "▶";
+    }
+}
+
+function subirISA(){
+    const letras = ["I","S","A"];
+    let efeito = setInterval(() => {
+        const span = document.createElement("span");
+        span.innerText = letras[Math.floor(Math.random()*3)];
+        span.classList.add("letra-subindo");
+        span.style.left = Math.random()*100 + "vw";
+        span.style.fontSize = (22 + Math.random()*18) + "px";
+        document.body.appendChild(span);
+        setTimeout(() => { span.remove(); }, 4000);
+    }, 180);
+
+    setTimeout(() => { clearInterval(efeito); }, 5000);
+}
+
+function atualizarTexto(ingles, portugues){
+    letra.innerHTML = `${ingles} <div class="traducao">${portugues}</div>`;
+}
+
+musica.ontimeupdate = function(){
+    const tempo = musica.currentTime;
+
+    // Efeito das letras subindo
+    if(tempo >= 23 && !isaSubiu){
+        subirISA();
+        isaSubiu = true;
+    }
+
+    // FINAL ÉPICO AOS 50 SEGUNDOS (Fim da letra)
+    if(tempo >= 50 && !finalAconteceu){
+        finalAconteceu = true;
+        
+        const telaMusica = document.getElementById("telaMusica");
+        telaMusica.classList.add("fade-out");
+
+        // Após sumir a música, mostra a flor e o versículo
+        setTimeout(() => {
+            telaMusica.style.display = "none";
+            const telaFinal = document.getElementById("telaFinal");
+            
+            // Carrega a flor apenas agora para a animação dela começar do zero!
+            document.getElementById("iframeFlor").src = "flower.html";
+            
+            telaFinal.style.display = "flex";
+            telaFinal.classList.add("fade-in");
+        }, 1000);
+    }
+
+    // Sincronização da Letra
+    if(tempo >= 0 && tempo < 3.5){
+        atualizarTexto("Oh, you got power, superpowers","Oh, você tem poder, superpoderes");
+    }
+    else if(tempo >= 8 && tempo < 11.5){
+        atualizarTexto("Do you even know how to wield them?","Você sabe ao menos como usá-los?");
+    }
+    else if(tempo >= 12 && tempo < 17.5){
+        atualizarTexto("All God's children are special","Todos os filhos de Deus são especiais");
+    }
+    else if(tempo >= 18 && tempo < 23.5){
+        atualizarTexto("But not like you, no, not like you","Mas não como você, não, não como você");
+    }
+    else if(tempo >= 24 && tempo < 28){
+        atualizarTexto("You are just like a flower 🌸","Você é como uma flor 🌸");
+    }
+    else if(tempo >= 29 && tempo < 31){
+        atualizarTexto("You're ever giving","Você está sempre se doando");
+    }
+    else if(tempo >= 33 && tempo < 35){
+        atualizarTexto("That is a given","Isso é um fato");
+    }
+    else if(tempo >= 36 && tempo < 41){
+        atualizarTexto("All God's children are special","Todos os filhos de Deus são especiais");
+    }
+    else if(tempo >= 42 && tempo < 50){
+        atualizarTexto("But not like you, no, not like you","Mas não como você, não, não como você");
+    }
+    else if(tempo >= 50) {
+        atualizarTexto("",""); // Limpa a letra para a transição
+    }
+};
+</script>
+
+</body>
+</html>
