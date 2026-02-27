@@ -19,7 +19,8 @@
         }
 
         body {
-            background-color: #050505;
+            /* ALTERAÇÃO AQUI: Gradiente azul marinho profundo para parecer o espaço */
+            background: radial-gradient(circle at center, #05162e 0%, #00040a 100%);
             display: flex;
             align-items: flex-end;
             justify-content: center;
@@ -30,7 +31,7 @@
 
         .flower-container {
             position: relative;
-            width: 600px; /* Limita a largura central */
+            width: 600px;
             height: 80vh;
             display: flex;
             justify-content: center;
@@ -44,10 +45,9 @@
             flex-direction: column;
             align-items: center;
             transform-origin: bottom center;
-            bottom: 40px; /* Eleva o ponto de origem */
+            bottom: 40px;
         }
 
-        /* Ajuste do Buquê: Flores mais próximas e anguladas */
         .flower--1 { left: 50%; transform: translateX(-50%) rotate(-25deg); }
         .flower--1 .flower__line { height: 35vh; animation-delay: 0.2s; }
 
@@ -95,7 +95,6 @@
             bottom: 20px;
         }
 
-        /* Criando 6 pétalas para volume */
         .flower__petal--1 { transform: rotate(0deg); }
         .flower__petal--2 { transform: rotate(60deg); }
         .flower__petal--3 { transform: rotate(120deg); }
@@ -114,7 +113,6 @@
             animation: glow 2s infinite alternate;
         }
 
-        /* Partículas */
         .light {
             position: absolute;
             background: #fff;
@@ -142,70 +140,11 @@
 <body>
 
     <div class="flower-container">
-        <div class="flower flower--1">
-            <div class="flower__line"></div>
-            <div class="flower__head">
-                <div class="flower__petal flower__petal--1"></div>
-                <div class="flower__petal flower__petal--2"></div>
-                <div class="flower__petal flower__petal--3"></div>
-                <div class="flower__petal flower__petal--4"></div>
-                <div class="flower__petal flower__petal--5"></div>
-                <div class="flower__petal flower__petal--6"></div>
-                <div class="flower__center"></div>
-            </div>
-        </div>
-        
-        <div class="flower flower--2">
-            <div class="flower__line"></div>
-            <div class="flower__head">
-                <div class="flower__petal flower__petal--1"></div>
-                <div class="flower__petal flower__petal--2"></div>
-                <div class="flower__petal flower__petal--3"></div>
-                <div class="flower__petal flower__petal--4"></div>
-                <div class="flower__petal flower__petal--5"></div>
-                <div class="flower__petal flower__petal--6"></div>
-                <div class="flower__center"></div>
-            </div>
-        </div>
-
-        <div class="flower flower--3">
-            <div class="flower__line"></div>
-            <div class="flower__head">
-                <div class="flower__petal flower__petal--1"></div>
-                <div class="flower__petal flower__petal--2"></div>
-                <div class="flower__petal flower__petal--3"></div>
-                <div class="flower__petal flower__petal--4"></div>
-                <div class="flower__petal flower__petal--5"></div>
-                <div class="flower__petal flower__petal--6"></div>
-                <div class="flower__center"></div>
-            </div>
-        </div>
-
-        <div class="flower flower--4">
-            <div class="flower__line"></div>
-            <div class="flower__head">
-                <div class="flower__petal flower__petal--1"></div>
-                <div class="flower__petal flower__petal--2"></div>
-                <div class="flower__petal flower__petal--3"></div>
-                <div class="flower__petal flower__petal--4"></div>
-                <div class="flower__petal flower__petal--5"></div>
-                <div class="flower__petal flower__petal--6"></div>
-                <div class="flower__center"></div>
-            </div>
-        </div>
-
-        <div class="flower flower--5">
-            <div class="flower__line"></div>
-            <div class="flower__head">
-                <div class="flower__petal flower__petal--1"></div>
-                <div class="flower__petal flower__petal--2"></div>
-                <div class="flower__petal flower__petal--3"></div>
-                <div class="flower__petal flower__petal--4"></div>
-                <div class="flower__petal flower__petal--5"></div>
-                <div class="flower__petal flower__petal--6"></div>
-                <div class="flower__center"></div>
-            </div>
-        </div>
+        <div class="flower flower--1"><div class="flower__line"></div><div class="flower__head"><div class="flower__petal flower__petal--1"></div><div class="flower__petal flower__petal--2"></div><div class="flower__petal flower__petal--3"></div><div class="flower__petal flower__petal--4"></div><div class="flower__petal flower__petal--5"></div><div class="flower__petal flower__petal--6"></div><div class="flower__center"></div></div></div>
+        <div class="flower flower--2"><div class="flower__line"></div><div class="flower__head"><div class="flower__petal flower__petal--1"></div><div class="flower__petal flower__petal--2"></div><div class="flower__petal flower__petal--3"></div><div class="flower__petal flower__petal--4"></div><div class="flower__petal flower__petal--5"></div><div class="flower__petal flower__petal--6"></div><div class="flower__center"></div></div></div>
+        <div class="flower flower--3"><div class="flower__line"></div><div class="flower__head"><div class="flower__petal flower__petal--1"></div><div class="flower__petal flower__petal--2"></div><div class="flower__petal flower__petal--3"></div><div class="flower__petal flower__petal--4"></div><div class="flower__petal flower__petal--5"></div><div class="flower__petal flower__petal--6"></div><div class="flower__center"></div></div></div>
+        <div class="flower flower--4"><div class="flower__line"></div><div class="flower__head"><div class="flower__petal flower__petal--1"></div><div class="flower__petal flower__petal--2"></div><div class="flower__petal flower__petal--3"></div><div class="flower__petal flower__petal--4"></div><div class="flower__petal flower__petal--5"></div><div class="flower__petal flower__petal--6"></div><div class="flower__center"></div></div></div>
+        <div class="flower flower--5"><div class="flower__line"></div><div class="flower__head"><div class="flower__petal flower__petal--1"></div><div class="flower__petal flower__petal--2"></div><div class="flower__petal flower__petal--3"></div><div class="flower__petal flower__petal--4"></div><div class="flower__petal flower__petal--5"></div><div class="flower__petal flower__petal--6"></div><div class="flower__center"></div></div></div>
     </div>
 
     <div id="lights-container"></div>
