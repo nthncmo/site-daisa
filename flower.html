@@ -1,9 +1,9 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buquê de Flores Mágicas - Floresta Encantada</title>
+    <title>Buquê de Flores Mágicas</title>
     <style>
         *, *::after, *::before {
             padding: 0;
@@ -12,154 +12,90 @@
         }
 
         :root {
-            /* Cores e Brilhos Neon Intensificados */
             --flower-color: #ff4da6;
             --flower-glow: #ff0080;
             --center-color: #ffeb3b;
-            --stem-neon: #39ff14; /* Verde Neon */
-            --forest-deep: #000407; /* Azul/Preto Profundo */
-            --sky-top: #001021;
-            --nebula-core: #13ffec; /* Turquesa Suave */
-            --particle-gold: #ffd700;
+            --stem-color: #2d6b38;
         }
 
         body {
-            /* Fundo Gradiente para o Céu Estrelado e Nebulosa */
-            background: 
-                radial-gradient(circle at 50% 10%, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 2%),
-                radial-gradient(circle at 10% 20%, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 1%),
-                radial-gradient(circle at 90% 30%, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 1.5%),
-                linear-gradient(to top, var(--forest-deep) 0%, #001f3f 60%, var(--sky-top) 100%);
+            background-color: #050505;
             display: flex;
             align-items: flex-end;
             justify-content: center;
             height: 100vh;
             overflow: hidden;
-            font-family: 'Georgia', serif; /* Fonte elegante para o título */
-        }
-
-        /* Silhuetas de Floresta de Primeiro Plano (Enquadramento) */
-        .forest-frame {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 100px;
-            z-index: 10;
-            pointer-events: none;
-            background: 
-                linear-gradient(to top, var(--forest-deep) 0%, rgba(0,0,0,0) 100%),
-                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100"><path d="M0 100 C 150 50, 350 150, 500 100 S 850 50, 1000 100 Z" fill="black"/></svg>') repeat-x; /* Grama de primeiro plano */
-        }
-
-        .forest-frame::before { /* Silhueta lateral esquerda */
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 200px;
-            height: 400px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 400"><path d="M20 400 Q 50 200 20 0 L 180 0 Q 150 200 180 400 Z" fill="black"/><circle cx="50" cy="350" r="15" fill="black"/></svg>') no-repeat bottom left; /* Árvore e cogumelo */
-            z-index: 11;
-        }
-
-        .forest-frame::after { /* Silhueta lateral direita */
-            content: '';
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            width: 250px;
-            height: 450px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 450"><path d="M230 450 Q 200 225 230 0 L 20 0 Q 50 225 20 450 Z" fill="black"/><path d="M50 420 Q 30 380 50 340 L 70 340 Q 90 380 70 420 Z" fill="black"/></svg>') no-repeat bottom right; /* Árvore e samambaia */
-            z-index: 11;
-        }
-
-        /* Container do Título */
-        .title-container {
-            position: absolute;
-            top: 50px;
-            width: 100%;
-            text-align: center;
-            z-index: 20;
-        }
-
-        .main-title {
-            color: #fff;
-            font-size: 3rem;
-            text-shadow: 
-                0 0 10px #fff,
-                0 0 20px #fff,
-                0 0 30px var(--flower-glow),
-                0 0 40px var(--flower-glow);
-            letter-spacing: 2px;
+            perspective: 1000px;
         }
 
         .flower-container {
             position: relative;
-            width: 100%;
-            height: 100vh;
+            width: 600px; /* Limita a largura central */
+            height: 80vh;
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            padding-bottom: 50px;
-            z-index: 5;
+            padding-bottom: 60px;
         }
 
-        /* Planta Central (Uma única planta) */
-        .magic-plant {
-            position: relative;
+        .flower {
+            position: absolute;
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        /* Caule Central Neon */
-        .plant__stem {
-            width: 6px;
-            height: 0; /* Começa em 0 */
-            background: linear-gradient(to top, #000, #15361a, var(--stem-neon));
-            border-radius: 4px;
-            animation: growStem 2.5s forwards ease-in-out;
-            box-shadow: 0 0 15px var(--stem-neon), 0 0 25px rgba(57, 255, 20, 0.4);
-        }
-
-        /* Posições das Flores no Buquê Central (Adaptado) */
-        .plant__flower {
-            position: absolute;
             transform-origin: bottom center;
+            bottom: 40px; /* Eleva o ponto de origem */
         }
 
-        .plant__flower--1 { bottom: 15vh; left: -100px; transform: rotate(-25deg); }
-        .plant__flower--2 { bottom: 25vh; left: -50px; transform: rotate(-10deg); z-index: 2; }
-        .plant__flower--3 { bottom: 35vh; left: 0; transform: translateX(-50%); z-index: 3; } /* Mais alta e central */
-        .plant__flower--4 { bottom: 25vh; left: 50px; transform: rotate(10deg); z-index: 2; }
-        .plant__flower--5 { bottom: 15vh; left: 100px; transform: rotate(25deg); }
+        /* Ajuste do Buquê: Flores mais próximas e anguladas */
+        .flower--1 { left: 50%; transform: translateX(-50%) rotate(-25deg); }
+        .flower--1 .flower__line { height: 35vh; animation-delay: 0.2s; }
 
-        /* Cabeça da Flor - Redesenhada e Neon */
+        .flower--2 { left: 50%; transform: translateX(-50%) rotate(-12deg); z-index: 2; }
+        .flower--2 .flower__line { height: 45vh; animation-delay: 0.5s; }
+
+        .flower--3 { left: 50%; transform: translateX(-50%); z-index: 3; }
+        .flower--3 .flower__line { height: 52vh; }
+
+        .flower--4 { left: 50%; transform: translateX(-50%) rotate(12deg); z-index: 2; }
+        .flower--4 .flower__line { height: 45vh; animation-delay: 0.7s; }
+
+        .flower--5 { left: 50%; transform: translateX(-50%) rotate(25deg); }
+        .flower--5 .flower__line { height: 35vh; animation-delay: 0.4s; }
+
+        .flower__line {
+            width: 5px;
+            height: 0;
+            background: linear-gradient(to top, #15361a, var(--stem-color));
+            border-radius: 10px;
+            animation: growLine 2.5s forwards ease-in-out;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
         .flower__head {
             position: absolute;
-            top: -50px; /* Ajustado */
-            width: 110px; /* Maior */
-            height: 110px;
-            animation: bloom 2.5s 1.5s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            top: -40px;
+            width: 80px;
+            height: 80px;
+            animation: bloom 2s 1.5s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform: scale(0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Pétala Neon (Mais Pétalas para forma de Lírio) */
         .flower__petal {
             position: absolute;
-            width: 30px; /* Mais fina */
-            height: 90px;
-            background: radial-gradient(circle at bottom, #fff 0%, var(--flower-color) 70%, var(--flower-glow) 100%);
-            border-radius: 50% 50% 10% 10%; /* Mais pontuda */
-            box-shadow: 
-                0 0 15px var(--flower-glow),
-                0 0 30px rgba(255, 0, 128, 0.5);
-            bottom: 20px;
-            left: 40px;
+            width: 35px;
+            height: 70px;
+            background: radial-gradient(circle at bottom, #fff 0%, var(--flower-color) 60%, var(--flower-glow) 100%);
+            border-radius: 50% 50% 20% 20%;
+            box-shadow: 0 0 15px rgba(255, 77, 166, 0.3);
             transform-origin: bottom center;
+            bottom: 20px;
         }
 
-        /* Forma de Lírio com 6 Pétalas */
+        /* Criando 6 pétalas para volume */
         .flower__petal--1 { transform: rotate(0deg); }
         .flower__petal--2 { transform: rotate(60deg); }
         .flower__petal--3 { transform: rotate(120deg); }
@@ -169,181 +105,123 @@
 
         .flower__center {
             position: absolute;
-            width: 30px; /* Maior e mais brilhante */
-            height: 30px;
+            width: 25px;
+            height: 25px;
             background: var(--center-color);
             border-radius: 50%;
-            bottom: 20px;
-            left: 40px;
-            z-index: 4;
-            box-shadow: 
-                0 0 25px var(--center-color),
-                0 0 50px #fff,
-                0 0 75px rgba(255, 235, 59, 0.8);
+            z-index: 10;
+            box-shadow: 0 0 20px var(--center-color), inset 0 0 10px orange;
             animation: glow 2s infinite alternate;
         }
 
-        /* Partículas de Luz (Vaga-lumes) Douradas */
+        /* Partículas */
         .light {
             position: absolute;
-            background: var(--particle-gold);
+            background: #fff;
             border-radius: 50%;
-            width: 4px; /* Variados */
-            height: 4px;
-            box-shadow: 0 0 10px var(--particle-gold), 0 0 20px #fff;
-            animation: floatUpForest 7s infinite ease-out; /* Mais devagar */
+            width: 2px;
+            height: 2px;
+            box-shadow: 0 0 8px var(--center-color);
+            animation: floatUp 6s infinite ease-out;
             opacity: 0;
-            z-index: 1;
         }
 
-        @keyframes growStem {
-            from { height: 0; }
-            to { height: 75vh; } /* Altura total da planta */
+        @keyframes growLine { from { height: 0; } }
+        @keyframes bloom { to { transform: scale(1) translateY(-20px); } }
+        @keyframes glow { 
+            from { transform: scale(0.9); filter: brightness(1); } 
+            to { transform: scale(1.1); filter: brightness(1.3); } 
         }
-
-        @keyframes bloom {
-            to { transform: scale(1); }
-        }
-
-        @keyframes glow {
-            from { opacity: 0.8; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1.1); }
-        }
-
-        /* Animação de Flutuação Mais Natural e Lenta */
-        @keyframes floatUpForest {
-            0% { transform: translateY(0) scale(1) translateX(0); opacity: 0; }
-            10% { opacity: 1; }
-            50% { transform: translateY(-35vh) scale(1.1) translateX(15px); }
-            90% { opacity: 1; }
-            100% { transform: translateY(-75vh) scale(0.8) translateX(-15px); opacity: 0; }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-60vh) translateX(30px); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="title-container">
-        <h1 class="main-title">Buquê de Flores Mágicas</h1>
-    </div>
-
-    <div class="forest-frame"></div>
-
     <div class="flower-container">
-        <div class="magic-plant">
-            <div class="plant__stem"></div>
-
-            <div class="plant__flower plant__flower--1">
-                <div class="flower__head">
-                    <div class="flower__petal flower__petal--1"></div>
-                    <div class="flower__petal flower__petal--2"></div>
-                    <div class="flower__petal flower__petal--3"></div>
-                    <div class="flower__petal flower__petal--4"></div>
-                    <div class="flower__petal flower__petal--5"></div>
-                    <div class="flower__petal flower__petal--6"></div>
-                    <div class="flower__center"></div>
-                </div>
+        <div class="flower flower--1">
+            <div class="flower__line"></div>
+            <div class="flower__head">
+                <div class="flower__petal flower__petal--1"></div>
+                <div class="flower__petal flower__petal--2"></div>
+                <div class="flower__petal flower__petal--3"></div>
+                <div class="flower__petal flower__petal--4"></div>
+                <div class="flower__petal flower__petal--5"></div>
+                <div class="flower__petal flower__petal--6"></div>
+                <div class="flower__center"></div>
             </div>
-            
-            <div class="plant__flower plant__flower--2">
-                <div class="flower__head">
-                    <div class="flower__petal flower__petal--1"></div>
-                    <div class="flower__petal flower__petal--2"></div>
-                    <div class="flower__petal flower__petal--3"></div>
-                    <div class="flower__petal flower__petal--4"></div>
-                    <div class="flower__petal flower__petal--5"></div>
-                    <div class="flower__petal flower__petal--6"></div>
-                    <div class="flower__center"></div>
-                </div>
+        </div>
+        
+        <div class="flower flower--2">
+            <div class="flower__line"></div>
+            <div class="flower__head">
+                <div class="flower__petal flower__petal--1"></div>
+                <div class="flower__petal flower__petal--2"></div>
+                <div class="flower__petal flower__petal--3"></div>
+                <div class="flower__petal flower__petal--4"></div>
+                <div class="flower__petal flower__petal--5"></div>
+                <div class="flower__petal flower__petal--6"></div>
+                <div class="flower__center"></div>
             </div>
+        </div>
 
-            <div class="plant__flower plant__flower--3">
-                <div class="flower__head">
-                    <div class="flower__petal flower__petal--1"></div>
-                    <div class="flower__petal flower__petal--2"></div>
-                    <div class="flower__petal flower__petal--3"></div>
-                    <div class="flower__petal flower__petal--4"></div>
-                    <div class="flower__petal flower__petal--5"></div>
-                    <div class="flower__petal flower__petal--6"></div>
-                    <div class="flower__center"></div>
-                </div>
+        <div class="flower flower--3">
+            <div class="flower__line"></div>
+            <div class="flower__head">
+                <div class="flower__petal flower__petal--1"></div>
+                <div class="flower__petal flower__petal--2"></div>
+                <div class="flower__petal flower__petal--3"></div>
+                <div class="flower__petal flower__petal--4"></div>
+                <div class="flower__petal flower__petal--5"></div>
+                <div class="flower__petal flower__petal--6"></div>
+                <div class="flower__center"></div>
             </div>
+        </div>
 
-            <div class="plant__flower plant__flower--4">
-                <div class="flower__head">
-                    <div class="flower__petal flower__petal--1"></div>
-                    <div class="flower__petal flower__petal--2"></div>
-                    <div class="flower__petal flower__petal--3"></div>
-                    <div class="flower__petal flower__petal--4"></div>
-                    <div class="flower__petal flower__petal--5"></div>
-                    <div class="flower__petal flower__petal--6"></div>
-                    <div class="flower__center"></div>
-                </div>
+        <div class="flower flower--4">
+            <div class="flower__line"></div>
+            <div class="flower__head">
+                <div class="flower__petal flower__petal--1"></div>
+                <div class="flower__petal flower__petal--2"></div>
+                <div class="flower__petal flower__petal--3"></div>
+                <div class="flower__petal flower__petal--4"></div>
+                <div class="flower__petal flower__petal--5"></div>
+                <div class="flower__petal flower__petal--6"></div>
+                <div class="flower__center"></div>
             </div>
+        </div>
 
-            <div class="plant__flower plant__flower--5">
-                <div class="flower__head">
-                    <div class="flower__petal flower__petal--1"></div>
-                    <div class="flower__petal flower__petal--2"></div>
-                    <div class="flower__petal flower__petal--3"></div>
-                    <div class="flower__petal flower__petal--4"></div>
-                    <div class="flower__petal flower__petal--5"></div>
-                    <div class="flower__petal flower__petal--6"></div>
-                    <div class="flower__center"></div>
-                </div>
+        <div class="flower flower--5">
+            <div class="flower__line"></div>
+            <div class="flower__head">
+                <div class="flower__petal flower__petal--1"></div>
+                <div class="flower__petal flower__petal--2"></div>
+                <div class="flower__petal flower__petal--3"></div>
+                <div class="flower__petal flower__petal--4"></div>
+                <div class="flower__petal flower__petal--5"></div>
+                <div class="flower__petal flower__petal--6"></div>
+                <div class="flower__center"></div>
             </div>
         </div>
     </div>
 
-    <div class="grass" id="grass-container"></div>
-    
     <div id="lights-container"></div>
 
     <script>
-        // Mantém a grama gerada dinamicamente, mas ajusta para misturar com as silhuetas
-        const grassContainer = document.getElementById('grass-container');
-        grassContainer.style.position = 'absolute';
-        grassContainer.style.bottom = '0';
-        grassContainer.style.width = '100%';
-        grassContainer.style.height = '150px'; /* Maior */
-        grassContainer.style.zIndex = '5';
-        grassContainer.style.pointerEvents = 'none';
-
-        for(let i = 0; i < 150; i++) { /* Mais densa */
-            let blade = document.createElement('div');
-            blade.style.position = 'absolute';
-            blade.style.bottom = '0';
-            blade.style.width = '3px'; /* Variados */
-            blade.style.height = (40 + Math.random() * 120) + 'px';
-            blade.style.background = 'linear-gradient(to top, #000 0%, #1a4421 50%, #15361a 100%)';
-            blade.style.left = Math.random() * 100 + '%';
-            blade.style.transform = `rotate(${-25 + Math.random() * 50}deg)`;
-            blade.style.opacity = (0.3 + Math.random() * 0.7);
-            blade.style.filter = 'drop-shadow(0 0 2px black)';
-            grassContainer.appendChild(blade);
-        }
-
-        // Sistema de partículas mais denso e dourado
         function createLight() {
             const container = document.getElementById('lights-container');
             const l = document.createElement('div');
             l.classList.add('light');
-            // Partículas em toda a tela, mas mais densas perto do buquê
-            let position = Math.random();
-            if (position < 0.6) { // 60% perto do buquê
-                l.style.left = (35 + Math.random() * 30) + '%';
-            } else {
-                l.style.left = (Math.random() * 100) + '%';
-            }
-            l.style.bottom = '10%';
-            // Tamanhos variados
-            let size = (3 + Math.random() * 4) + 'px';
-            l.style.width = size;
-            l.style.height = size;
-            l.style.animationDuration = (5 + Math.random() * 4) + 's'; /* Mais lento */
+            l.style.left = (45 + Math.random() * 10) + '%'; 
+            l.style.bottom = '20%';
+            l.style.animationDuration = (3 + Math.random() * 3) + 's';
             container.appendChild(l);
-            setTimeout(() => l.remove(), 9000);
+            setTimeout(() => l.remove(), 6000);
         }
-        setInterval(createLight, 100); /* Mais frequente */
+        setInterval(createLight, 200);
     </script>
 </body>
 </html>
