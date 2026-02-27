@@ -16,16 +16,59 @@
             --flower-glow: #ff0080;
             --center-color: #ffeb3b;
             --stem-color: #2d6b38;
+            /* Cores adicionadas para o fundo da floresta */
+            --forest-deep: #000407;
+            --sky-top: #001021;
         }
 
         body {
-            background-color: #050505;
+            /* Fundo atualizado para o céu estrelado */
+            background: 
+                radial-gradient(circle at 50% 10%, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 2%),
+                radial-gradient(circle at 10% 20%, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 1%),
+                radial-gradient(circle at 90% 30%, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 1.5%),
+                linear-gradient(to top, var(--forest-deep) 0%, #001f3f 60%, var(--sky-top) 100%);
             display: flex;
             align-items: flex-end;
             justify-content: center;
             height: 100vh;
             overflow: hidden;
             perspective: 1000px;
+        }
+
+        /* Silhuetas da floresta adicionadas ao fundo */
+        .forest-frame {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100px;
+            z-index: 10;
+            pointer-events: none;
+            background: 
+                linear-gradient(to top, var(--forest-deep) 0%, rgba(0,0,0,0) 100%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100"><path d="M0 100 C 150 50, 350 150, 500 100 S 850 50, 1000 100 Z" fill="black"/></svg>') repeat-x;
+        }
+
+        .forest-frame::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 200px;
+            height: 400px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 400"><path d="M20 400 Q 50 200 20 0 L 180 0 Q 150 200 180 400 Z" fill="black"/><circle cx="50" cy="350" r="15" fill="black"/></svg>') no-repeat bottom left;
+            z-index: 11;
+        }
+
+        .forest-frame::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 250px;
+            height: 450px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 450"><path d="M230 450 Q 200 225 230 0 L 20 0 Q 50 225 20 450 Z" fill="black"/><path d="M50 420 Q 30 380 50 340 L 70 340 Q 90 380 70 420 Z" fill="black"/></svg>') no-repeat bottom right;
+            z-index: 11;
         }
 
         .flower-container {
@@ -36,6 +79,7 @@
             justify-content: center;
             align-items: flex-end;
             padding-bottom: 60px;
+            z-index: 5; /* Adicionado para ficar atrás da moldura da floresta */
         }
 
         .flower {
@@ -124,6 +168,7 @@
             box-shadow: 0 0 8px var(--center-color);
             animation: floatUp 6s infinite ease-out;
             opacity: 0;
+            z-index: 15; /* Adicionado para brilhar por cima de tudo */
         }
 
         @keyframes growLine { from { height: 0; } }
@@ -140,6 +185,8 @@
     </style>
 </head>
 <body>
+
+    <div class="forest-frame"></div>
 
     <div class="flower-container">
         <div class="flower flower--1">
