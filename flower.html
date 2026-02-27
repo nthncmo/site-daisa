@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>Flores Brilhantes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Flores Brilhantes</title>
     <style>
         *, *::after, *::before {
             padding: 0;
@@ -18,161 +18,158 @@
         }
 
         body {
-            background-color: #020205; /* Fundo espaço escuro para combinar com o seu projeto */
+            background-color: #020205;
             display: flex;
-            align-items: flex-end;
+            align-items: center; /* Centraliza verticalmente */
             justify-content: center;
-            min-height: 100vh;
+            height: 100vh;
             overflow: hidden;
+            font-family: sans-serif;
+        }
+
+        /* Texto de Provérbios centralizado */
+        .versiculo {
+            position: absolute;
+            top: 15%;
+            width: 90%;
+            text-align: center;
+            color: white;
+            z-index: 10;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
         }
 
         .flower-container {
             position: relative;
-            transform: scale(0.8); /* Ajuste o tamanho geral aqui */
+            width: 100%;
+            height: 60vh; /* Limita a altura das flores */
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            transform: scale(0.7); /* Ajuste o zoom se necessário */
         }
 
-        /* Caule principal */
         .flower {
             position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
+            bottom: 0;
         }
 
-        /* Os 3 caules */
-        .flower--1 { left: 30%; transform: rotate(-15deg); bottom: 20px; z-index: 1;}
-        .flower--2 { left: 50%; bottom: 40px; z-index: 2;}
-        .flower--3 { left: 70%; transform: rotate(15deg); bottom: 20px; z-index: 1;}
+        /* Ajuste de posição dos caules */
+        .flower--1 { left: 20%; transform: rotate(-10deg); z-index: 1;}
+        .flower--2 { left: 50%; transform: translateX(-50%); z-index: 2;}
+        .flower--3 { left: 80%; transform: rotate(10deg); z-index: 1;}
 
         .flower__line {
-            width: 8px;
-            height: 400px;
+            width: 6px;
+            height: 0;
             background-image: linear-gradient(to top, #000, #1a4421, #2d6b38);
             border-radius: 4px;
-            animation: growLine 2s forwards;
-            transform-origin: bottom center;
+            animation: growLine 2.5s forwards ease-out;
         }
 
-        /* Pétalas */
         .flower__head {
             position: absolute;
-            top: -20px;
+            top: -40px;
             width: 100px;
             height: 100px;
-            animation: bloom 3s 1s forwards;
+            animation: bloom 3s 1.5s forwards;
             transform: scale(0);
         }
 
         .flower__petal {
             position: absolute;
-            width: 40px;
-            height: 80px;
+            width: 35px;
+            height: 70px;
             background: radial-gradient(circle at bottom, #fff 0%, var(--flower-color) 70%, #b3145e 100%);
             border-radius: 50% 50% 10% 10%;
             box-shadow: 0 0 20px rgba(255, 77, 166, 0.4);
             bottom: 20px;
-            left: 30px;
+            left: 32px;
             transform-origin: bottom center;
         }
 
         .flower__petal:nth-child(1) { transform: rotate(-40deg); }
-        .flower__petal:nth-child(2) { transform: rotate(0deg); height: 85px; bottom: 25px; z-index: 2;}
+        .flower__petal:nth-child(2) { transform: rotate(0deg); height: 75px; z-index: 2;}
         .flower__petal:nth-child(3) { transform: rotate(40deg); }
 
-        /* Centro da Flor e Brilho */
         .flower__center {
             position: absolute;
-            width: 30px;
-            height: 15px;
+            width: 25px;
+            height: 12px;
             background: var(--flower-center);
             border-radius: 50%;
-            bottom: 15px;
-            left: 35px;
+            bottom: 18px;
+            left: 37px;
             z-index: 3;
-            box-shadow: 0 0 30px var(--flower-center), 0 0 50px #fff;
+            box-shadow: 0 0 20px var(--flower-center), 0 0 40px #fff;
         }
 
-        /* Grama e Folhas do fundo */
         .grass {
             position: absolute;
-            bottom: 0;
-            width: 100vw;
-            height: 200px;
-            pointer-events: none;
+            bottom: -20px;
+            width: 100%;
+            height: 150px;
             z-index: 3;
-        }
-
-        .grass-blade {
-            position: absolute;
-            bottom: -50px;
-            width: 15px;
-            height: 250px;
-            background: linear-gradient(to top, #000, #15361a, #235c2b);
-            border-radius: 50% 50% 0 0;
-            transform-origin: bottom center;
-        }
-
-        /* Partículas de luz subindo */
-        .light {
-            position: absolute;
-            background: var(--flower-center);
-            border-radius: 50%;
-            width: 4px;
-            height: 4px;
-            box-shadow: 0 0 10px var(--flower-center);
-            animation: floatUp 4s infinite ease-in-out;
-            opacity: 0;
         }
 
         @keyframes growLine {
             0% { height: 0; }
-            100% { height: 350px; }
+            100% { height: 45vh; } /* Altura do caule proporcional à tela */
         }
 
         @keyframes bloom {
             0% { transform: scale(0); }
-            100% { transform: scale(1); }
+            100% { transform: scale(1.2); }
+        }
+
+        /* Partículas */
+        .light {
+            position: absolute;
+            background: var(--flower-center);
+            border-radius: 50%;
+            width: 3px;
+            height: 3px;
+            animation: floatUp 5s infinite ease-in-out;
+            opacity: 0;
         }
 
         @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 0; }
+            0% { transform: translateY(0); opacity: 0; }
             50% { opacity: 1; }
-            100% { transform: translateY(-300px) scale(0); opacity: 0; }
+            100% { transform: translateY(-50vh) translateX(20px); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
+    <div class="versiculo">
+        <h2 style="font-style: italic; font-weight: 300; font-size: 1.2rem; margin-bottom: 10px;">
+            "Mulher virtuosa, quem a achará? <br> O seu valor muito excede o de rubis."
+        </h2>
+        <p style="font-size: 0.9rem; opacity: 0.8;">Provérbios 31:10</p>
+    </div>
+
     <div class="flower-container">
         <div class="flower flower--1">
             <div class="flower__line"></div>
             <div class="flower__head">
-                <div class="flower__petal"></div>
-                <div class="flower__petal"></div>
-                <div class="flower__petal"></div>
+                <div class="flower__petal"></div><div class="flower__petal"></div><div class="flower__petal"></div>
                 <div class="flower__center"></div>
             </div>
         </div>
-
         <div class="flower flower--2">
             <div class="flower__line"></div>
             <div class="flower__head">
-                <div class="flower__petal"></div>
-                <div class="flower__petal"></div>
-                <div class="flower__petal"></div>
+                <div class="flower__petal"></div><div class="flower__petal"></div><div class="flower__petal"></div>
                 <div class="flower__center"></div>
             </div>
         </div>
-
         <div class="flower flower--3">
             <div class="flower__line"></div>
             <div class="flower__head">
-                <div class="flower__petal"></div>
-                <div class="flower__petal"></div>
-                <div class="flower__petal"></div>
+                <div class="flower__petal"></div><div class="flower__petal"></div><div class="flower__petal"></div>
                 <div class="flower__center"></div>
             </div>
         </div>
@@ -182,29 +179,27 @@
     <div id="lights-container"></div>
 
     <script>
-        // Gerar matinhos/folhas na base
         const grassContainer = document.getElementById('grass-container');
-        for(let i = 0; i < 30; i++) {
+        for(let i = 0; i < 40; i++) {
             let blade = document.createElement('div');
-            blade.classList.add('grass-blade');
-            blade.style.left = Math.random() * 100 + 'vw';
-            blade.style.height = (100 + Math.random() * 200) + 'px';
-            let rotation = -30 + Math.random() * 60;
-            blade.style.transform = `rotate(${rotation}deg)`;
-            blade.style.opacity = 0.5 + Math.random() * 0.5;
+            blade.style.position = 'absolute';
+            blade.style.bottom = '0';
+            blade.style.width = '2px';
+            blade.style.height = (50 + Math.random() * 100) + 'px';
+            blade.style.background = 'linear-gradient(to top, #000, #1a4421)';
+            blade.style.left = Math.random() * 100 + '%';
+            blade.style.transform = `rotate(${-20 + Math.random() * 40}deg)`;
             grassContainer.appendChild(blade);
         }
 
-        // Gerar luzinhas mágicas voando das flores
-        const lightsContainer = document.getElementById('lights-container');
-        for(let i = 0; i < 40; i++) {
+        const lContainer = document.getElementById('lights-container');
+        for(let i = 0; i < 30; i++) {
             let light = document.createElement('div');
             light.classList.add('light');
-            light.style.left = (30 + Math.random() * 40) + 'vw'; // Concentrado perto das flores
-            light.style.bottom = (100 + Math.random() * 200) + 'px';
-            light.style.animationDelay = (Math.random() * 4) + 's';
-            light.style.animationDuration = (3 + Math.random() * 3) + 's';
-            lightsContainer.appendChild(light);
+            light.style.left = Math.random() * 100 + '%';
+            light.style.bottom = '20%';
+            light.style.animationDelay = Math.random() * 5 + 's';
+            lContainer.appendChild(light);
         }
     </script>
 </body>
