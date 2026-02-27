@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flores Mágicas</title>
+    <title>Flores Mágicas Agrupadas</title>
     <style>
         *, *::after, *::before {
             padding: 0;
@@ -20,7 +20,7 @@
         body {
             background-color: #000;
             display: flex;
-            align-items: flex-end; /* Alinha na base */
+            align-items: flex-end;
             justify-content: center;
             height: 100vh;
             overflow: hidden;
@@ -44,12 +44,11 @@
             transform-origin: bottom center;
         }
 
-        /* Posições e inclinações */
-        .flower--1 { left: 25%; transform: rotate(-12deg) scale(0.9); }
+        /* AJUSTE DE PROXIMIDADE: Flores mais perto do centro (50%) */
+        .flower--1 { left: 40%; transform: rotate(-8deg) scale(0.9); }
         .flower--2 { left: 50%; transform: translateX(-50%) scale(1.1); z-index: 2; }
-        .flower--3 { left: 75%; transform: rotate(12deg) scale(0.9); }
+        .flower--3 { left: 60%; transform: rotate(8deg) scale(0.9); }
 
-        /* Caule longo e elegante */
         .flower__line {
             width: 4px;
             height: 0;
@@ -58,7 +57,6 @@
             animation: growLine 2.5s forwards ease-in-out;
         }
 
-        /* Cabeça da flor */
         .flower__head {
             position: absolute;
             top: -30px;
@@ -68,7 +66,6 @@
             transform: scale(0);
         }
 
-        /* Pétalas mais arredondadas e brilhantes */
         .flower__petal {
             position: absolute;
             width: 38px;
@@ -86,7 +83,6 @@
         .flower__petal--2 { transform: rotate(0deg); height: 82px; z-index: 2; }
         .flower__petal--3 { transform: rotate(35deg); }
 
-        /* Centro com brilho intenso estilo vaga-lume */
         .flower__center {
             position: absolute;
             width: 20px;
@@ -102,7 +98,6 @@
             animation: glow 2s infinite alternate;
         }
 
-        /* Grama no fundo */
         .grass {
             position: absolute;
             bottom: 0;
@@ -112,7 +107,6 @@
             filter: blur(1px);
         }
 
-        /* Partículas subindo */
         .light {
             position: absolute;
             background: #fff;
@@ -124,9 +118,8 @@
             opacity: 0;
         }
 
-        /* Animações */
         @keyframes growLine {
-            to { height: 65vh; } /* Caule ocupa 65% da altura da tela */
+            to { height: 65vh; }
         }
 
         @keyframes bloom {
@@ -141,7 +134,7 @@
         @keyframes floatUp {
             0% { transform: translateY(0) scale(1); opacity: 0; }
             20% { opacity: 1; }
-            100% { transform: translateY(-40vh) translateX(30px); opacity: 0; }
+            100% { transform: translateY(-40vh) translateX(20px); opacity: 0; }
         }
     </style>
 </head>
@@ -201,7 +194,7 @@
         function createLight() {
             const l = document.createElement('div');
             l.classList.add('light');
-            l.style.left = (Math.random() * 80 + 10) + '%';
+            l.style.left = (Math.random() * 40 + 30) + '%'; // Luzinhas saem mais do centro agora
             l.style.bottom = '20%';
             l.style.animationDuration = (3 + Math.random() * 3) + 's';
             document.getElementById('lights-container').appendChild(l);
@@ -211,6 +204,3 @@
     </script>
 </body>
 </html>
-
-
-        
