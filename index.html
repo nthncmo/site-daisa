@@ -173,6 +173,13 @@ button:hover{
     <button onclick="iniciar()">Continuar</button>
 </div>
 
+<div class="container" id="telaErro" style="display:none;">
+    <h1 style="font-size: 80px; margin: 10px 0;">🖕</h1>
+    <h2>Acesso Negado!</h2>
+    <p>Esse site não é para você.</p>
+    <button onclick="voltar()">Tentar Novamente</button>
+</div>
+
 <div class="container" id="telaMusica" style="display:none;">
     <h1 id="mensagem"></h1>
     <div id="letra">💫</div>
@@ -201,25 +208,59 @@ let isaSubiu = false;
 let finalAconteceu = false; // Controle do final
 
 function iniciar(){
-    const nome = document.getElementById("inputNome").value;
-    if(nome.trim() === ""){
+    const nomeOriginal = document.getElementById("inputNome").value;
+    
+    // Remove todos os espaços e deixa em letras minúsculas (ignora camelCase e espaços soltos)
+    const nomeFormatado = nomeOriginal.replace(/\s+/g, '').toLowerCase();
+
+    if(nomeFormatado === ""){
         alert("Digite seu nome 💜");
         return;
     }
 
     const telaNome = document.getElementById("telaNome");
     const telaMusica = document.getElementById("telaMusica");
+    const telaErro = document.getElementById("telaErro");
 
+    // Lista de nomes permitidos
+    const nomesPermitidos = ["isa", "isabella", "isabela", "bella", "bela"];
+
+    telaNome.classList.remove("fade-in");
     telaNome.classList.add("fade-out");
 
     setTimeout(() => {
         telaNome.style.display = "none";
-        telaMusica.style.display = "block";
-        telaMusica.classList.add("fade-in");
+        
+        if(nomesPermitidos.includes(nomeFormatado)) {
+            // Se for ela, segue para a música
+            telaMusica.style.display = "block";
+            telaMusica.classList.add("fade-in");
+            // Usa o nome original (com a primeira maiúscula, se ela digitou assim) para ficar bonito na tela
+            document.getElementById("mensagem").innerText = nomeOriginal.trim() + ", uma doce garota 💖";
+            musica.play();
+        } else {
+            // Se não for ela, mostra o dedo do meio
+            telaErro.style.display = "block";
+            telaErro.classList.remove("fade-out");
+            telaErro.classList.add("fade-in");
+        }
+    }, 800);
+}
 
-        document.getElementById("mensagem").innerText = nome + ", uma doce garota 💖";
+// Função para voltar da tela de erro
+function voltar(){
+    const telaNome = document.getElementById("telaNome");
+    const telaErro = document.getElementById("telaErro");
 
-        musica.play();
+    telaErro.classList.remove("fade-in");
+    telaErro.classList.add("fade-out");
+
+    setTimeout(() => {
+        telaErro.style.display = "none";
+        telaNome.style.display = "block";
+        telaNome.classList.remove("fade-out");
+        telaNome.classList.add("fade-in");
+        document.getElementById("inputNome").value = ""; // Limpa o input
     }, 800);
 }
 
