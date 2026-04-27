@@ -174,10 +174,8 @@ button:hover{
 </div>
 
 <div class="container" id="telaErro" style="display:none;">
-    <h1 style="font-size: 80px; margin: 10px 0;">🖕</h1>
-    <h2>Acesso Negado!</h2>
-    <p>Esse site não é para você.</p>
-    <button onclick="voltar()">Tentar Novamente</button>
+    <h2>Esse site não foi feito para você.</h2>
+    <button onclick="voltar()">Voltar</button>
 </div>
 
 <div class="container" id="telaMusica" style="display:none;">
@@ -239,7 +237,7 @@ function iniciar(){
             document.getElementById("mensagem").innerText = nomeOriginal.trim() + ", uma doce garota 💖";
             musica.play();
         } else {
-            // Se não for ela, mostra o dedo do meio
+            // Se não for ela, mostra a tela de erro
             telaErro.style.display = "block";
             telaErro.classList.remove("fade-out");
             telaErro.classList.add("fade-in");
