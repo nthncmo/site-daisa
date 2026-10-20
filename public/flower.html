@@ -136,6 +136,40 @@
             20% { opacity: 0.8; }
             100% { transform: translateY(-60vh) translateX(30px); opacity: 0; }
         }
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        .petal-fall {
+            position: absolute;
+            top: -20px;
+            width: 12px;
+            height: 18px;
+            background: radial-gradient(circle at bottom, #fff 0%, var(--flower-color) 70%);
+            border-radius: 50% 50% 20% 20%;
+            opacity: 0.85;
+            pointer-events: none;
+            animation: petalFall linear forwards;
+        }
+
+        .flower-container { animation: sway 6s ease-in-out infinite alternate; transform-origin: bottom center; }
+
+        @keyframes twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+        @keyframes sway { from { transform: rotate(-1.5deg); } to { transform: rotate(1.5deg); } }
+        @keyframes petalFall {
+            to { transform: translate(var(--drift), 105vh) rotate(var(--spin)); opacity: 0; }
+        }
+
+        @media (max-width: 600px) {
+            .flower-container { transform: scale(0.75); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; }
+        }
     </style>
 </head>
 <body>
@@ -148,20 +182,67 @@
         <div class="flower flower--5"><div class="flower__line"></div><div class="flower__head"><div class="flower__petal flower__petal--1"></div><div class="flower__petal flower__petal--2"></div><div class="flower__petal flower__petal--3"></div><div class="flower__petal flower__petal--4"></div><div class="flower__petal flower__petal--5"></div><div class="flower__petal flower__petal--6"></div><div class="flower__center"></div></div></div>
     </div>
 
+    <div id="stars-container"></div>
     <div id="lights-container"></div>
+    <div id="petals-container"></div>
 
     <script>
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function createStars() {
+            const container = document.getElementById('stars-container');
+            const total = Math.round((window.innerWidth * window.innerHeight) / 12000);
+            for (let i = 0; i < total; i++) {
+                const s = document.createElement('div');
+                const size = Math.random() * 2 + 0.5;
+                s.classList.add('star');
+                s.style.width = s.style.height = size + 'px';
+                s.style.left = Math.random() * 100 + '%';
+                s.style.top = Math.random() * 70 + '%';
+                s.style.animationDelay = (Math.random() * 3) + 's';
+                container.appendChild(s);
+            }
+        }
+
         function createLight() {
             const container = document.getElementById('lights-container');
             const l = document.createElement('div');
             l.classList.add('light');
-            l.style.left = (45 + Math.random() * 10) + '%'; 
+            l.style.left = (45 + Math.random() * 10) + '%';
             l.style.bottom = '20%';
             l.style.animationDuration = (3 + Math.random() * 3) + 's';
+            l.addEventListener('animationiteration', () => l.remove());
             container.appendChild(l);
             setTimeout(() => l.remove(), 6000);
         }
-        setInterval(createLight, 200);
+
+        function createPetal() {
+            const container = document.getElementById('petals-container');
+            const p = document.createElement('div');
+            p.classList.add('petal-fall');
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = (6 + Math.random() * 5) + 's';
+            p.style.setProperty('--drift', (Math.random() * 160 - 80) + 'px');
+            p.style.setProperty('--spin', (Math.random() * 720 - 360) + 'deg');
+            p.addEventListener('animationend', () => p.remove());
+            container.appendChild(p);
+        }
+
+        createStars();
+
+        // Os efeitos param quando a aba fica oculta, evitando acumular elementos.
+        let timers = [];
+        function start() {
+            if (reduceMotion || timers.length) return;
+            timers.push(setInterval(createLight, 200));
+            timers.push(setTimeout(() => timers.push(setInterval(createPetal, 900)), 3500));
+        }
+        function stop() {
+            timers.forEach((t) => { clearInterval(t); clearTimeout(t); });
+            timers = [];
+        }
+        document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+        start();
     </script>
 </body>
 </html>
