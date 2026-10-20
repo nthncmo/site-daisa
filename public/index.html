@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#3a0ca3">
+<title>Para Você 💜</title>
+<link rel="preload" href="superpowers.mp3" as="audio" type="audio/mpeg">
+
+<style>
+:root{
+    --rosa:#ff4da6;
+    --rosa-forte:#ff1e8e;
+    --lilas:#b517ff;
+    --vidro:rgba(255,255,255,0.1);
+}
+
+*{ box-sizing:border-box; }
+
+body{
+    margin:0;
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#1e1e2f,#3a0ca3,#7209b7);
+    background-size:200% 200%;
+    animation:fundo 18s ease infinite;
+    font-family:Arial, Helvetica, sans-serif;
+    color:white;
+    text-align:center;
+    overflow:hidden;
+    padding:16px;
+}
+
+@keyframes fundo{
+    0%,100%{ background-position:0% 50%; }
+    50%{ background-position:100% 50%; }
+}
+
+/* Céu estrelado de fundo */
+#ceu{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
+}
+
+/* Container principal */
+.container{
+    position:relative;
+    background:var(--vidro);
+    padding:30px;
+    border-radius:20px;
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    box-shadow:0 0 30px rgba(0,0,0,0.5);
+    width:min(360px, 100%);
+    z-index:2;
+}
+
+.container[hidden], #telaFinal[hidden]{ display:none !important; }
+
+h1{ font-size:26px; margin:0 0 6px; }
+h2{ font-size:22px; margin:0 0 6px; }
+
+input, textarea{
+    padding:12px;
+    border-radius:10px;
+    border:2px solid transparent;
+    margin-top:10px;
+    width:90%;
+    text-align:center;
+    outline:none;
+    font:inherit;
+    font-size:16px;
+    transition:border-color .2s;
+}
+
+input:focus, textarea:focus{ border-color:var(--rosa); }
+
+input.tremer{ animation:tremer .4s; }
+
+@keyframes tremer{
+    20%,60%{ transform:translateX(-6px); }
+    40%,80%{ transform:translateX(6px); }
+}
+
+button{
+    margin-top:15px;
+    padding:12px 25px;
+    border:none;
+    border-radius:10px;
+    background:var(--rosa);
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:15px;
+    transition:background .3s, transform .3s, opacity .3s;
+}
+
+button:hover:not(:disabled){
+    background:var(--rosa-forte);
+    transform:scale(1.05);
+}
+
+button:focus-visible{ outline:3px solid white; outline-offset:2px; }
+
+button:disabled{ opacity:.6; cursor:wait; }
+
+button.secundario{ background:rgba(255,255,255,0.18); }
+button.secundario:hover:not(:disabled){ background:rgba(255,255,255,0.3); }
+
+.aviso{
+    min-height:20px;
+    font-size:14px;
+    margin-top:12px;
+    color:#ffd1ea;
+}
+
+.spinner{
+    display:inline-block;
+    width:14px;
+    height:14px;
+    border:2px solid rgba(255,255,255,.4);
+    border-top-color:white;
+    border-radius:50%;
+    animation:girar .8s linear infinite;
+    vertical-align:-2px;
+    margin-right:6px;
+}
+
+@keyframes girar{ to{ transform:rotate(360deg); } }
+
+/* Player */
+.controles{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:10px;
+}
+
+#btnPlayPause{
+    flex:none;
+    background:rgba(255,255,255,0.2);
+    border-radius:50%;
+    width:50px;
+    height:50px;
+    padding:0;
+    margin:0;
+    font-size:20px;
+    line-height:50px;
+}
+
+.progresso{
+    flex:1;
+    text-align:left;
+}
+
+#barra{
+    position:relative;
+    height:6px;
+    border-radius:3px;
+    background:rgba(255,255,255,0.2);
+    cursor:pointer;
+    overflow:hidden;
+}
+
+#barraPreenchida{
+    position:absolute;
+    inset:0 auto 0 0;
+    width:0%;
+    background:linear-gradient(90deg,var(--rosa),var(--lilas));
+    border-radius:3px;
+}
+
+#tempo{
+    font-size:12px;
+    opacity:.7;
+    margin-top:6px;
+    font-variant-numeric:tabular-nums;
+}
+
+/* Letra */
+#letra{
+    font-size:20px;
+    margin:20px 0;
+    min-height:90px;
+    line-height:1.4;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    transition:opacity .35s, transform .35s;
+}
+
+#letra.trocando{
+    opacity:0;
+    transform:translateY(6px);
+}
+
+.traducao{
+    font-size:14px;
+    opacity:0.8;
+    margin-top:5px;
+}
+
+/* Botão de tocar quando o navegador bloqueia autoplay */
+#toqueParaOuvir{
+    position:absolute;
+    inset:0;
+    border-radius:20px;
+    background:rgba(20,10,40,.75);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    z-index:5;
+}
+
+/* Letras subindo */
+.letra-subindo{
+    position:fixed;
+    bottom:-50px;
+    font-weight:bold;
+    animation:subir 4s linear forwards;
+    pointer-events:none;
+    color:var(--lilas);
+    text-shadow:0 0 12px rgba(181,23,255,.7);
+    z-index:3;
+}
+
+@keyframes subir{
+    from{ transform:translateY(0) rotate(0); opacity:1; }
+    to{ transform:translateY(-110vh) rotate(var(--giro, 20deg)); opacity:0; }
+}
+
+/* Corações ao clicar */
+.coracao{
+    position:fixed;
+    pointer-events:none;
+    z-index:20;
+    font-size:18px;
+    animation:coracao 1.2s ease-out forwards;
+}
+
+@keyframes coracao{
+    from{ transform:translate(-50%,-50%) scale(.6); opacity:1; }
+    to{ transform:translate(calc(-50% + var(--dx)), calc(-50% - 80px)) scale(1.3); opacity:0; }
+}
+
+/* TELA FINAL (A Flor e o Versículo) */
+#telaFinal{
+    position:fixed;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    align-items:center;
+    z-index:10;
+    background:#020205;
+    padding:16px;
+}
+
+#iframeFlor{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:none;
+    z-index:-1;
+}
+
+#versiculo{
+    background:rgba(0,0,0,0.4);
+    padding:20px 30px;
+    border-radius:15px;
+    backdrop-filter:blur(5px);
+    -webkit-backdrop-filter:blur(5px);
+    font-size:22px;
+    color:#f8e5ff;
+    text-shadow:0 0 15px rgba(255,255,255,0.8);
+    font-style:italic;
+    line-height:1.5;
+    max-width:560px;
+    opacity:0;
+    animation:fadeIn 3s 2.5s forwards;
+}
+
+#versiculo small{ font-size:16px; opacity:.8; font-style:normal; }
+
+.acoesFinal{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin:14px 0 6vh;
+    opacity:0;
+    animation:fadeIn 2s 5s forwards;
+}
+
+.acoesFinal button{ margin-top:0; }
+
+/* Caixa de resposta */
+#caixaResposta{
+    position:fixed;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:rgba(2,2,5,.6);
+    z-index:30;
+    padding:16px;
+}
+
+#caixaResposta[hidden]{ display:none; }
+
+#caixaResposta textarea{
+    text-align:left;
+    resize:vertical;
+    min-height:120px;
+    width:100%;
+}
+
+#contador{
+    font-size:12px;
+    opacity:.7;
+    text-align:right;
+    margin-top:4px;
+}
+
+/* Animações de transição */
+.fade-out{ animation:fadeOut .8s forwards; }
+.fade-in{ animation:fadeIn 1.2s forwards; }
+
+@keyframes fadeOut{
+    from{ opacity:1; transform:scale(1); }
+    to{ opacity:0; transform:scale(1.1); }
+}
+
+@keyframes fadeIn{
+    from{ opacity:0; }
+    to{ opacity:1; }
+}
+
+@media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+        animation-duration:.01ms !important;
+        animation-delay:0s !important;
+        transition-duration:.01ms !important;
+    }
+    #versiculo, .acoesFinal{ opacity:1; }
+}
+
+@media (max-width:420px){
+    .container{ padding:22px; }
+    #letra{ font-size:18px; }
+    #versiculo{ font-size:18px; padding:16px 20px; }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="ceu" aria-hidden="true"></canvas>
+
+<form class="container fade-in" id="telaNome" novalidate>
+    <h2>Qual é o seu nome? 💜</h2>
+    <input type="text" id="inputNome" aria-label="Seu nome" placeholder="Digite seu nome" autocomplete="given-name" maxlength="60" autofocus>
+    <br>
+    <button type="submit" id="btnContinuar">Continuar</button>
+    <div class="aviso" id="avisoNome" role="status" aria-live="polite"></div>
+</form>
+
+<div class="container" id="telaErro" hidden>
+    <h2>Esse site não foi feito para você.</h2>
+    <button type="button" id="btnVoltar">Voltar</button>
+</div>
+
+<div class="container" id="telaMusica" hidden>
+    <h1 id="mensagem"></h1>
+    <div id="letra" aria-live="polite">💫</div>
+
+    <div class="controles">
+        <button type="button" id="btnPlayPause" aria-label="Pausar">⏸</button>
+        <div class="progresso">
+            <div id="barra" role="slider" aria-label="Posição da música" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+                <div id="barraPreenchida"></div>
+            </div>
+            <div id="tempo">0:00 / 0:50</div>
+        </div>
+    </div>
+    <div class="aviso" id="avisoMusica" role="status" aria-live="polite"></div>
+
+    <div id="toqueParaOuvir" hidden>
+        <div>Seu navegador pausou a música 🎧</div>
+        <button type="button" id="btnTocar">▶ Tocar</button>
+    </div>
+
+    <audio id="musica" preload="auto">
+        <source src="superpowers.mp3" type="audio/mpeg">
+    </audio>
+</div>
+
+<div id="telaFinal" hidden>
+    <iframe id="iframeFlor" title="Buquê de flores animado" src="about:blank"></iframe>
+
+    <div id="versiculo">
+        "Mulher virtuosa, quem a achará?<br>O seu valor muito excede o de rubis."<br>
+        <small>Provérbios 31:10</small>
+    </div>
+
+    <div class="acoesFinal">
+        <button type="button" class="secundario" id="btnRepetir">↺ Ver de novo</button>
+        <button type="button" id="btnAbrirResposta">💌 Deixar uma resposta</button>
+    </div>
+</div>
+
+<div id="caixaResposta" hidden>
+    <form class="container" id="formResposta" novalidate>
+        <h2>Escreva pra mim 💌</h2>
+        <textarea id="textoResposta" maxlength="1000" placeholder="O que você sentiu?"></textarea>
+        <div id="contador">0 / 1000</div>
+        <button type="button" class="secundario" id="btnFecharResposta">Fechar</button>
+        <button type="submit" id="btnEnviarResposta">Enviar</button>
+        <div class="aviso" id="avisoResposta" role="status" aria-live="polite"></div>
+    </form>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+/* ===================== Configuração ===================== */
+
+const DURACAO = 50;           // segundos até o final épico
+const INICIO_ISA = 23;        // quando as letras I-S-A sobem
+const TEMPO_LIMITE_API = 10000;
+
+const LETRA = [
+    { de: 0,  ate: 3.5,  en: "Oh, you got power, superpowers",       pt: "Oh, você tem poder, superpoderes" },
+    { de: 8,  ate: 11.5, en: "Do you even know how to wield them?",  pt: "Você sabe ao menos como usá-los?" },
+    { de: 12, ate: 17.5, en: "All God's children are special",       pt: "Todos os filhos de Deus são especiais" },
+    { de: 18, ate: 23.5, en: "But not like you, no, not like you",   pt: "Mas não como você, não, não como você" },
+    { de: 24, ate: 28,   en: "You are just like a flower 🌸",        pt: "Você é como uma flor 🌸" },
+    { de: 29, ate: 31,   en: "You're ever giving",                   pt: "Você está sempre se doando" },
+    { de: 33, ate: 35,   en: "That is a given",                      pt: "Isso é um fato" },
+    { de: 36, ate: 41,   en: "All God's children are special",       pt: "Todos os filhos de Deus são especiais" },
+    { de: 42, ate: 50,   en: "But not like you, no, not like you",   pt: "Mas não como você, não, não como você" },
+];
+
+const reduzirMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ===================== Elementos ===================== */
+
+const $ = (id) => document.getElementById(id);
+
+const telas = {
+    nome: $("telaNome"),
+    erro: $("telaErro"),
+    musica: $("telaMusica"),
+    final: $("telaFinal"),
+};
+
+const musica = $("musica");
+const letra = $("letra");
+const btnPlayPause = $("btnPlayPause");
+const inputNome = $("inputNome");
+const btnContinuar = $("btnContinuar");
+const avisoNome = $("avisoNome");
+const avisoMusica = $("avisoMusica");
+const barra = $("barra");
+const barraPreenchida = $("barraPreenchida");
+const tempoTxt = $("tempo");
+const toqueParaOuvir = $("toqueParaOuvir");
+
+/* ===================== Estado ===================== */
+
+const estado = {
+    tela: "nome",
+    token: null,
+    saudacao: "",
+    isaSubiu: false,
+    finalAconteceu: false,
+    linhaAtual: -1,
+    // Se o áudio falhar, um relógio interno mantém a letra rodando.
+    semAudio: false,
+    querTocar: false,
+    relogioInicio: 0,
+    relogioPausadoEm: null,
+    loopId: null,
+};
+
+/* ===================== Utilidades ===================== */
+
+function formatarTempo(s){
+    s = Math.max(0, Math.floor(s));
+    return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+}
+
+function esperar(ms){ return new Promise((r) => setTimeout(r, ms)); }
+
+async function trocarTela(destino){
+    if(estado.tela === destino) return;
+    const atual = telas[estado.tela];
+    const proxima = telas[destino];
+
+    atual.classList.remove("fade-in");
+    atual.classList.add("fade-out");
+    await esperar(reduzirMovimento ? 0 : 800);
+    atual.hidden = true;
+    atual.classList.remove("fade-out");
+
+    proxima.hidden = false;
+    proxima.classList.remove("fade-out");
+    proxima.classList.add("fade-in");
+    estado.tela = destino;
+}
+
+async function chamarApi(caminho, dados){
+    const controle = new AbortController();
+    const timer = setTimeout(() => controle.abort(), TEMPO_LIMITE_API);
+    try{
+        const resp = await fetch(caminho, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dados),
+            signal: controle.signal,
+        });
+        let corpo = null;
+        try{ corpo = await resp.json(); }catch{ /* resposta sem JSON */ }
+        if(!resp.ok || !corpo){
+            const msg = corpo && corpo.erro ? corpo.erro : "Não foi possível conectar. Tente novamente.";
+            throw new Error(msg);
+        }
+        return corpo;
+    }catch(e){
+        if(e.name === "AbortError") throw new Error("A conexão demorou demais. Tente novamente.");
+        if(e instanceof TypeError) throw new Error("Sem conexão com a internet? Tente novamente.");
+        throw e;
+    }finally{
+        clearTimeout(timer);
+    }
+}
+
+/* ===================== Tela do nome ===================== */
+
+telas.nome.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const nome = inputNome.value.trim();
+
+    if(!nome){
+        avisoNome.textContent = "Digite seu nome 💜";
+        inputNome.classList.remove("tremer");
+        void inputNome.offsetWidth;
+        inputNome.classList.add("tremer");
+        inputNome.focus();
+        return;
+    }
+
+    btnContinuar.disabled = true;
+    btnContinuar.innerHTML = '<span class="spinner"></span>Verificando';
+    avisoNome.textContent = "";
+
+    try{
+        const res = await chamarApi("/api/entrar", { nome });
+
+        if(res.permitido){
+            estado.token = res.token;
+            estado.saudacao = res.saudacao;
+            try{ sessionStorage.setItem("sessao", JSON.stringify({ token: res.token, saudacao: res.saudacao })); }catch{}
+            $("mensagem").textContent = res.saudacao;
+            // Inicia a música ainda dentro do gesto do usuário para evitar bloqueio de autoplay.
+            tocar();
+            await trocarTela("musica");
+        }else{
+            await trocarTela("erro");
+            $("btnVoltar").focus();
+        }
+    }catch(e){
+        avisoNome.textContent = e.message;
+    }finally{
+        btnContinuar.disabled = false;
+        btnContinuar.textContent = "Continuar";
+    }
+});
+
+$("btnVoltar").addEventListener("click", async () => {
+    inputNome.value = "";
+    avisoNome.textContent = "";
+    await trocarTela("nome");
+    inputNome.focus();
+});
+
+/* ===================== Música e sincronização ===================== */
+
+function tempoAtual(){
+    if(!estado.semAudio) return musica.currentTime;
+    const agora = estado.relogioPausadoEm ?? performance.now();
+    return (agora - estado.relogioInicio) / 1000;
+}
+
+function pausado(){
+    return estado.semAudio ? estado.relogioPausadoEm !== null : musica.paused;
+}
+
+function atualizarBotao(){
+    const p = pausado();
+    btnPlayPause.textContent = p ? "▶" : "⏸";
+    btnPlayPause.setAttribute("aria-label", p ? "Tocar" : "Pausar");
+}
+
+async function tocar(){
+    estado.querTocar = true;
+    toqueParaOuvir.hidden = true;
+
+    if(estado.semAudio){
+        if(estado.relogioPausadoEm !== null){
+            estado.relogioInicio += performance.now() - estado.relogioPausadoEm;
+            estado.relogioPausadoEm = null;
+        }
+    }else{
+        try{
+            await musica.play();
+        }catch(e){
+            if(e.name === "NotAllowedError"){
+                // Autoplay bloqueado: pede um toque explícito.
+                toqueParaOuvir.hidden = false;
+                $("btnTocar").focus();
+            }else{
+                ativarModoSemAudio();
+            }
+        }
+    }
+    atualizarBotao();
+    iniciarLoop();
+}
+
+function pausar(){
+    estado.querTocar = false;
+    if(estado.semAudio){
+        if(estado.relogioPausadoEm === null) estado.relogioPausadoEm = performance.now();
+    }else{
+        musica.pause();
+    }
+    atualizarBotao();
+}
+
+function ativarModoSemAudio(){
+    if(estado.semAudio) return;
+    const t = musica.currentTime || 0;
+    estado.semAudio = true;
+    estado.relogioInicio = performance.now() - t * 1000;
+    // Só começa a contar se a música já devia estar tocando.
+    estado.relogioPausadoEm = estado.querTocar ? null : performance.now();
+    toqueParaOuvir.hidden = true;
+    avisoMusica.textContent = "Não consegui carregar a música, mas a letra continua 💜";
+    atualizarBotao();
+    iniciarLoop();
+}
+
+function buscar(segundos){
+    segundos = Math.min(Math.max(0, segundos), DURACAO - 0.1);
+    if(estado.semAudio){
+        const ref = estado.relogioPausadoEm ?? performance.now();
+        estado.relogioInicio = ref - segundos * 1000;
+    }else{
+        musica.currentTime = segundos;
+    }
+    // Voltando antes do efeito, ele pode acontecer de novo.
+    if(segundos < INICIO_ISA) estado.isaSubiu = false;
+    sincronizar();
+}
+
+function mostrarLinha(indice){
+    if(indice === estado.linhaAtual) return;
+    estado.linhaAtual = indice;
+
+    letra.classList.add("trocando");
+    setTimeout(() => {
+        // Usa a linha mais recente, caso várias trocas aconteçam em sequência.
+        const atual = estado.linhaAtual;
+        letra.replaceChildren();
+        if(atual >= 0){
+            const l = LETRA[atual];
+            const en = document.createElement("div");
+            en.textContent = l.en;
+            const pt = document.createElement("div");
+            pt.className = "traducao";
+            pt.textContent = l.pt;
+            letra.append(en, pt);
+        }
+        letra.classList.remove("trocando");
+    }, reduzirMovimento ? 0 : 250);
+}
+
+function sincronizar(){
+    const t = tempoAtual();
+
+    const pct = Math.min(100, (t / DURACAO) * 100);
+    barraPreenchida.style.width = pct + "%";
+    barra.setAttribute("aria-valuenow", String(Math.round(pct)));
+    tempoTxt.textContent = formatarTempo(t) + " / " + formatarTempo(DURACAO);
+
+    if(t >= INICIO_ISA && !estado.isaSubiu){
+        estado.isaSubiu = true;
+        subirISA();
+    }
+
+    if(t >= DURACAO){
+        mostrarLinha(-1);
+        irParaFinal();
+        return;
+    }
+
+    mostrarLinha(LETRA.findIndex((l) => t >= l.de && t < l.ate));
+}
+
+// requestAnimationFrame dá uma sincronização mais precisa que o ontimeupdate (~4x por segundo).
+function iniciarLoop(){
+    if(estado.loopId !== null) return;
+    const passo = () => {
+        if(estado.tela === "final" || estado.finalAconteceu){ estado.loopId = null; return; }
+        sincronizar();
+        estado.loopId = requestAnimationFrame(passo);
+    };
+    estado.loopId = requestAnimationFrame(passo);
+}
+
+btnPlayPause.addEventListener("click", () => pausado() ? tocar() : pausar());
+$("btnTocar").addEventListener("click", tocar);
+
+musica.addEventListener("play", atualizarBotao);
+musica.addEventListener("pause", atualizarBotao);
+musica.addEventListener("ended", () => { if(!estado.finalAconteceu) irParaFinal(); });
+musica.addEventListener("waiting", () => { avisoMusica.innerHTML = '<span class="spinner"></span>Carregando…'; });
+musica.addEventListener("playing", () => { if(!estado.semAudio) avisoMusica.textContent = ""; });
+musica.addEventListener("error", ativarModoSemAudio, true);
+musica.querySelector("source").addEventListener("error", ativarModoSemAudio);
+
+// Barra de progresso: clique, arrasto e teclado.
+function posicaoNaBarra(clientX){
+    const r = barra.getBoundingClientRect();
+    return ((clientX - r.left) / r.width) * DURACAO;
+}
+barra.addEventListener("pointerdown", (ev) => {
+    barra.setPointerCapture(ev.pointerId);
+    buscar(posicaoNaBarra(ev.clientX));
+});
+barra.addEventListener("pointermove", (ev) => {
+    if(barra.hasPointerCapture(ev.pointerId)) buscar(posicaoNaBarra(ev.clientX));
+});
+barra.addEventListener("keydown", (ev) => {
+    if(ev.key === "ArrowRight"){ buscar(tempoAtual() + 5); ev.preventDefault(); }
+    if(ev.key === "ArrowLeft"){ buscar(tempoAtual() - 5); ev.preventDefault(); }
+});
+
+// Barra de espaço pausa/toca durante a música.
+document.addEventListener("keydown", (ev) => {
+    if(estado.tela !== "musica" || ev.code !== "Space") return;
+    if(ev.target.closest("button, input, textarea, [role=slider]")) return;
+    ev.preventDefault();
+    pausado() ? tocar() : pausar();
+});
+
+/* ===================== Efeitos ===================== */
+
+function subirISA(){
+    if(reduzirMovimento) return;
+    const letras = ["I", "S", "A"];
+    const efeito = setInterval(() => {
+        const span = document.createElement("span");
+        span.textContent = letras[Math.floor(Math.random() * letras.length)];
+        span.classList.add("letra-subindo");
+        span.style.left = Math.random() * 100 + "vw";
+        span.style.fontSize = (22 + Math.random() * 18) + "px";
+        span.style.setProperty("--giro", (Math.random() * 60 - 30) + "deg");
+        span.addEventListener("animationend", () => span.remove());
+        document.body.appendChild(span);
+    }, 180);
+    setTimeout(() => clearInterval(efeito), 5000);
+}
+
+document.addEventListener("pointerdown", (ev) => {
+    if(reduzirMovimento || ev.target.closest("button, input, textarea, #barra")) return;
+    for(let i = 0; i < 3; i++){
+        const c = document.createElement("span");
+        c.className = "coracao";
+        c.textContent = ["💜", "💖", "✨"][i];
+        c.style.left = ev.clientX + "px";
+        c.style.top = ev.clientY + "px";
+        c.style.setProperty("--dx", (Math.random() * 80 - 40) + "px");
+        c.style.animationDelay = i * 80 + "ms";
+        c.addEventListener("animationend", () => c.remove());
+        document.body.appendChild(c);
+    }
+});
+
+/* ===================== Final ===================== */
+
+async function irParaFinal(){
+    if(estado.finalAconteceu) return;
+    estado.finalAconteceu = true;
+
+    // Carrega a flor apenas agora para a animação dela começar do zero.
+    $("iframeFlor").src = "flower.html";
+    await trocarTela("final");
+
+    if(estado.token){
+        chamarApi("/api/concluir", { token: estado.token }).catch(() => { /* não bloqueia a experiência */ });
+    }
+}
+
+$("btnRepetir").addEventListener("click", async () => {
+    estado.finalAconteceu = false;
+    estado.isaSubiu = false;
+    estado.linhaAtual = -1;
+    letra.textContent = "💫";
+    $("iframeFlor").src = "about:blank";
+    buscar(0);
+    await trocarTela("musica");
+    tocar();
+});
+
+/* ===================== Resposta ===================== */
+
+const caixaResposta = $("caixaResposta");
+const textoResposta = $("textoResposta");
+const avisoResposta = $("avisoResposta");
+const btnEnviarResposta = $("btnEnviarResposta");
+
+$("btnAbrirResposta").addEventListener("click", () => {
+    caixaResposta.hidden = false;
+    textoResposta.focus();
+});
+
+function fecharResposta(){ caixaResposta.hidden = true; $("btnAbrirResposta").focus(); }
+
+$("btnFecharResposta").addEventListener("click", fecharResposta);
+caixaResposta.addEventListener("click", (ev) => { if(ev.target === caixaResposta) fecharResposta(); });
+document.addEventListener("keydown", (ev) => { if(ev.key === "Escape" && !caixaResposta.hidden) fecharResposta(); });
+
+textoResposta.addEventListener("input", () => {
+    $("contador").textContent = textoResposta.value.length + " / 1000";
+});
+
+$("formResposta").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const mensagem = textoResposta.value.trim();
+    if(!mensagem){ avisoResposta.textContent = "Escreva alguma coisinha antes de enviar 💌"; return; }
+
+    btnEnviarResposta.disabled = true;
+    btnEnviarResposta.innerHTML = '<span class="spinner"></span>Enviando';
+    avisoResposta.textContent = "";
+
+    try{
+        await chamarApi("/api/resposta", { token: estado.token, mensagem });
+        textoResposta.value = "";
+        $("contador").textContent = "0 / 1000";
+        avisoResposta.textContent = "Recebido com carinho 💜";
+        setTimeout(fecharResposta, 1800);
+    }catch(e){
+        avisoResposta.textContent = e.message;
+    }finally{
+        btnEnviarResposta.disabled = false;
+        btnEnviarResposta.textContent = "Enviar";
+    }
+});
+
+/* ===================== Céu estrelado ===================== */
+
+(function ceu(){
+    const canvas = $("ceu");
+    const ctx = canvas.getContext("2d");
+    if(!ctx) return;
+
+    let estrelas = [];
+    let largura = 0, altura = 0, rafId = null;
+
+    function redimensionar(){
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        largura = window.innerWidth;
+        altura = window.innerHeight;
+        canvas.width = largura * dpr;
+        canvas.height = altura * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const qtd = Math.round((largura * altura) / 9000);
+        estrelas = Array.from({ length: qtd }, () => ({
+            x: Math.random() * largura,
+            y: Math.random() * altura,
+            r: Math.random() * 1.4 + 0.3,
+            fase: Math.random() * Math.PI * 2,
+            vel: Math.random() * 0.002 + 0.0008,
+        }));
+        if(reduzirMovimento) desenhar(0);
+    }
+
+    function desenhar(t){
+        ctx.clearRect(0, 0, largura, altura);
+        for(const e of estrelas){
+            const brilho = 0.35 + 0.65 * Math.abs(Math.sin(e.fase + t * e.vel));
+            ctx.globalAlpha = brilho;
+            ctx.beginPath();
+            ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+            ctx.fillStyle = "#fff";
+            ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+    }
+
+    function loop(t){
+        desenhar(t);
+        rafId = requestAnimationFrame(loop);
+    }
+
+    window.addEventListener("resize", redimensionar);
+    redimensionar();
+
+    if(!reduzirMovimento){
+        rafId = requestAnimationFrame(loop);
+        // Economiza bateria quando a aba não está visível.
+        document.addEventListener("visibilitychange", () => {
+            if(document.hidden){ cancelAnimationFrame(rafId); rafId = null; }
+            else if(rafId === null){ rafId = requestAnimationFrame(loop); }
+        });
+    }
+})();
+
+/* ===================== Retomada de sessão ===================== */
+
+try{
+    const salvo = JSON.parse(sessionStorage.getItem("sessao") || "null");
+    if(salvo && salvo.token){
+        estado.token = salvo.token;
+        avisoNome.textContent = "Que bom te ver de novo 💜";
+    }
+}catch{ /* sessionStorage indisponível */ }
+
+})();
+</script>
+
+</body>
+</html>
